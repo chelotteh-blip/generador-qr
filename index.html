@@ -118,6 +118,11 @@ async function whatsapp() {
     try { await navigator.share({ files: [archivo], title: titulo, text: titulo }); return; }
     catch (e) { if (e.name === "AbortError") return; }
   }
+  // En la compu copia la imagen del QR para pegarla en el chat con Ctrl+V
+  try {
+    await navigator.clipboard.write([new ClipboardItem({ "image/png": archivo })]);
+    document.getElementById("error").textContent = "QR copiado: en el chat de WhatsApp apretá Ctrl+V para pegarlo.";
+  } catch (e) {}
   window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent((titulo ? titulo + ": " : "") + link), "_blank");
 }
 
