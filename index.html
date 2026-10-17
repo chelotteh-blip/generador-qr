@@ -113,10 +113,12 @@ function imagen() {
 async function whatsapp() {
   const archivo = await imagen();
   // En el celular comparte la imagen del QR; en la compu manda el link
-  if (navigator.canShare && navigator.canShare({ files: [archivo] })) {
-    try { await navigator.share({ files: [archivo], title: titulo, text: titulo }); return; } catch (e) { return; }
+  const celular = /Android|iPhone|iPad/i.test(navigator.userAgent);
+  if (celular && navigator.canShare && navigator.canShare({ files: [archivo] })) {
+    try { await navigator.share({ files: [archivo], title: titulo, text: titulo }); return; }
+    catch (e) { if (e.name === "AbortError") return; }
   }
-  window.open("https://wa.me/?text=" + encodeURIComponent((titulo ? titulo + ": " : "") + link), "_blank");
+  window.open("https://api.whatsapp.com/send?text=" + encodeURIComponent((titulo ? titulo + ": " : "") + link), "_blank");
 }
 
 function gmail() {
