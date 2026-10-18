@@ -87,6 +87,9 @@ function hacerQR() {
   if (id) link = "https://drive.google.com/file/d/" + id[1] + "/view";
   const abrir = link.match(/drive\.google\.com\/open\?(?:.*&)?id=([\w-]+)/i);
   if (abrir) link = "https://drive.google.com/file/d/" + abrir[1] + "/view";
+  // Cualquier archivo de Drive (imagen, PDF, Word, LibreOffice...): vista previa en el navegador, sin app
+  const arch = link.match(/drive\.google\.com\/(?:u\/\d+\/)?file\/d\/([\w-]+)/i);
+  if (arch) link = "https://drive.google.com/file/d/" + arch[1] + "/preview";
   // Documentos, planillas y presentaciones de Google: vista previa, se abre en cualquier navegador sin app ni cuenta
   const doc = link.match(/docs\.google\.com\/(document|spreadsheets|presentation)\/(?:u\/\d+\/)?d\/([\w-]+)/i);
   if (doc) link = "https://docs.google.com/" + doc[1] + "/d/" + doc[2] + "/preview";
