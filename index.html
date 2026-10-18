@@ -54,6 +54,7 @@
 
   <section id="resultado">
     <canvas id="lienzo"></canvas>
+    <p id="aviso" style="color:#7c2d12;font-weight:bold;text-align:center"></p>
     <button id="otro" class="otro" onclick="otroDiseno()">🔄 Otro diseño</button>
     <div class="botones">
       <button class="wa" onclick="whatsapp()">WhatsApp</button>
@@ -84,12 +85,19 @@ function hacerQR() {
   // Links de descarga directa -> link para ver (cada uno descarga si quiere)
   const id = link.match(/drive(?:\.usercontent)?\.google\.com\/(?:uc|download)\?.*\bid=([\w-]+)/i);
   if (id) link = "https://drive.google.com/file/d/" + id[1] + "/view";
+  const abrir = link.match(/drive\.google\.com\/open\?(?:.*&)?id=([\w-]+)/i);
+  if (abrir) link = "https://drive.google.com/file/d/" + abrir[1] + "/view";
+  // Documentos, planillas y presentaciones de Google: vista previa, se abre en cualquier navegador sin app ni cuenta
+  const doc = link.match(/docs\.google\.com\/(document|spreadsheets|presentation)\/(?:u\/\d+\/)?d\/([\w-]+)/i);
+  if (doc) link = "https://docs.google.com/" + doc[1] + "/d/" + doc[2] + "/preview";
   link = link.replace(/(dropbox\.com\/.*[?&])dl=1/i, "$1dl=0");
   if (!id && /\.(pdf|zip|rar|mp3|mp4|docx?|pptx?|xlsx?)(\?|#|$)/i.test(link) && !/google\.com|youtube|youtu\.be|padlet/i.test(link)) {
     error.textContent = "Ojo: este link descarga el archivo directo. Mejor subilo a Drive y pegá el link de «Compartir».";
     return;
   }
 
+  document.getElementById("aviso").textContent = /google\.com|youtu/i.test(link)
+    ? "Para que lo abra cualquiera: el archivo tiene que estar en «Cualquier persona con el enlace» (Drive) o «No listado/Público» (YouTube)." : "";
   tema = buscarTema(titulo);
   dibujar();
   document.getElementById("resultado").style.display = "block";
